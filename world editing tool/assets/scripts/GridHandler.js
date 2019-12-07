@@ -1,7 +1,7 @@
 class GridHandler {
 
     constructor() {
-        this.grid;
+        this.data;
     }
 
     LoadUserGridData (file) {
@@ -12,10 +12,12 @@ class GridHandler {
 
     DisplayGridData (loadedData, file) {
 
-        worldGrid.grid = JSON.parse(loadedData);
+        worldGrid.data = JSON.parse(loadedData);
+
+        //  Update Tools views
         document.getElementById("InputFileName").innerHTML = file.name;
-        
-        alert(file.name + " has been loaded!\n\nResult:\n" + loadedData);
+        document.getElementById("GridInputSizeX").value = worldGrid.data.grid[0].length;
+        document.getElementById("GridInputSizeY").value = worldGrid.data.grid.length;
 
     }
 
