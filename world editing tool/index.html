@@ -10,10 +10,62 @@
     <body>
         
         <div id="EditingMenu">
-            <div class="container">
+            <div class="container fadeIn">
                 <div class="row">
                     <div class="col-md-12">
                         <h1>Tools</h1>
+                        <hr/>
+
+                        <h4>General information</h4>
+                        <h5>Grid size:</h5>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="">X</span>
+                            </div>
+                            <input type="text" class="form-control">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="">Y</span>
+                              </div>
+                            <input type="text" class="form-control">
+                        </div>
+                        <hr/>
+                        
+                        <div id="SelectedTileView">
+                            
+                            <h4>Currently selected tile</h4>
+                            
+                            <h5>Grid position:</h5>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="">X</span>
+                                </div>
+                                <input type="text" class="form-control" value="0" readonly>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="">Y</span>
+                                </div>
+                                <input type="text" class="form-control" value="0" readonly>
+                            </div>
+
+                            <h5>Texture:</h5>
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="text mb-3" class="form-control" type="text" placeholder="Search" aria-label="Search">
+                                <div class="input-group-append">
+                                    <div id="TexturePreviewBox" class="input-group-text">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5>Type:</h5>
+                            <div class="input-group input-group-lg">
+                                <select class="custom-select" id="inputGroupSelect01">
+                                    <option value="land"selected>Land</option>
+                                    <option value="water">Water</option>
+                                    <option value="wall">Wall</option>
+                                </select>
+                            </div>
+                            
+                        </div>
+
                     </div>
                 </div>
             </div>

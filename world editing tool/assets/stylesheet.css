@@ -22,3 +22,17 @@ div#EditingMenu {
     min-width: 320px;
     background-color: #cccccc;
 }
+
+div#EditingMenu div#TexturePreviewBox {
+    padding: 0 23px 0 23px;
+    background: url('images/placeholders/tile.png') 50% 50% repeat;
+}
+
+.fadeIn {
+    animation: fadein 1s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; transform: translate(-20px, 0) }
+    to   { opacity: 1; transform: translate(0, 0) }
+}
