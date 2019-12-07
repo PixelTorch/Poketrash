@@ -23,6 +23,7 @@ div#EditingMenu {
     width: 20%;
     padding: 20px 0 20px 0;
     min-width: 320px;
+    overflow-y: auto;
     background-color: #cccccc;
 }
 
@@ -31,9 +32,11 @@ div#EditingMenu div#TexturePreviewBox {
     background: url('images/placeholders/tile.png') 50% 50% repeat;
 }
 
-canvas#RenderArea {
+div.renderAreaContainer {
     position: relative;
+    height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 .fadeIn {
