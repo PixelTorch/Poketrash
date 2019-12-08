@@ -58,7 +58,7 @@ class GridHandler {
     GetRectPos(grisPosx = 0, gridPosY = 0, scale = 1, tilesX = 1, tilesY = 1) {
 
         let canvasCenter = worldGrid.canvasCenter();
-        let gridSize = [worldGrid.data.grid.length*worldGrid.tileSize, worldGrid.data.grid[0].length*worldGrid.tileSize];
+        let gridSize = [worldGrid.data.grid[0].length*worldGrid.tileSize, worldGrid.data.grid.length*worldGrid.tileSize];
 
         let tileOffsetFromCenter = [-(gridSize[0]/2), -(gridSize[1]/2)];
 
@@ -76,8 +76,8 @@ class GridHandler {
         worldGrid.ResetCanvasSize();
         worldGrid.canvasContext.clearRect(0, 0, worldGrid.canvas.width, worldGrid.canvas.height);
 
-        for(var y=0; y < worldGrid.data.grid[0].length; y++) {
-            for(var x=0; x < worldGrid.data.grid.length; x++) {
+        for(var y=0; y < worldGrid.data.grid.length; y++) {
+            for(var x=0; x < worldGrid.data.grid[0].length; x++) {
 
                 let currentTile = worldGrid.data.grid[y][x];
                 
