@@ -10,12 +10,23 @@ class GridHandler {
             canvas: "RenderArea"
         }
         this.tileSize = 32;
+        this.zoom = 1;
 
         this.canvas = document.getElementById(this.elementNames.canvas);
         this.canvasContext = this.canvas.getContext("2d");
 
         // Events
         window.addEventListener("resize", function() { worldGrid.RenderGrid(); });
+        this.canvas.addEventListener("wheel", function(scrollEvent) {
+            if (scrollEvent.deltaY < 0) {
+                //  setZoom in
+                worldGrid.setZoom(worldGrid.zoom+0.2);
+            } else if (scrollEvent.deltaY > 0) {
+                //  scroll setZoom
+                worldGrid.setZoom(worldGrid.zoom-0.2);
+            }
+            worldGrid.RenderGrid();
+        });
 
     }
 
@@ -25,6 +36,23 @@ class GridHandler {
             worldGrid.canvas.width/2,
             worldGrid.canvas.height/2
         ];
+    }
+
+    setZoom(magnification) {
+        var minMagnification = 0.5;
+        var maxMagnification = worldGrid.canvas.height/worldGrid.tileSize;
+        
+        if (magnification < minMagnification) {
+
+            return worldGrid.zoom = minMagnification;
+
+        } else if (magnification > maxMagnification) {
+
+            return worldGrid.zoom = maxMagnification;
+
+        }
+
+        return worldGrid.zoom = magnification;
     }
 
     //  Methods
@@ -58,15 +86,15 @@ class GridHandler {
     GetRectPos(grisPosx = 0, gridPosY = 0, scale = 1, tilesX = 1, tilesY = 1) {
 
         let canvasCenter = worldGrid.canvasCenter();
-        let gridSize = [worldGrid.data.grid[0].length*worldGrid.tileSize, worldGrid.data.grid.length*worldGrid.tileSize];
+        let gridSize = [worldGrid.data.grid[0].length*worldGrid.tileSize * worldGrid.zoom, worldGrid.data.grid.length*worldGrid.tileSize * worldGrid.zoom];
 
         let tileOffsetFromCenter = [-(gridSize[0]/2), -(gridSize[1]/2)];
 
         return [
-            tileOffsetFromCenter[0] + (grisPosx * worldGrid.tileSize) + canvasCenter[0],
-            tileOffsetFromCenter[1] + (gridPosY * worldGrid.tileSize) + canvasCenter[1],
-            worldGrid.tileSize * tilesX,
-            worldGrid.tileSize * tilesY
+            tileOffsetFromCenter[0] + (grisPosx * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[0],
+            tileOffsetFromCenter[1] + (gridPosY * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[1],
+            worldGrid.tileSize * tilesX * worldGrid.zoom,
+            worldGrid.tileSize * tilesY * worldGrid.zoom
         ];
 
     }
@@ -93,13 +121,13 @@ class GridHandler {
                     break;
                 }
 
-                let tileRectPos = this.GetRectPos(x, y);
+                let tileRectPos = this.GetRectPos(x, y, worldGrid.zoom);
 
                 worldGrid.canvasContext.fillRect(tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
             }
         }
         
-        let gridOrigin = this.GetRectPos(0, 0, undefined, worldGrid.data.grid[0].length, worldGrid.data.grid.length);
+        let gridOrigin = this.GetRectPos(0, 0, worldGrid.zoom, worldGrid.data.grid[0].length, worldGrid.data.grid.length);
         worldGrid.RenderOutline([
             { x: gridOrigin[0], y: gridOrigin[1]},
             { x: gridOrigin[2], y: gridOrigin[3] }
