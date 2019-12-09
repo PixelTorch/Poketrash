@@ -9,13 +9,27 @@ class GridHandler {
             gridSizeY: "GridInputSizeY",
             canvas: "RenderArea"
         }
+        this.defaultTile = { texture: "placeholder", type: "placeholder" };
         this.tileSize = 32;
+
+        this.placeHolderImage = new Image();
+        this.placeHolderImage.src = "assets/images/placeholders/tile.png";
 
         this.canvas = document.getElementById(this.elementNames.canvas);
         this.canvasContext = this.canvas.getContext("2d");
 
         // Events
         window.addEventListener("resize", function() { worldGrid.RenderGrid(); });
+        document.getElementById(this.elementNames.gridSizeX).addEventListener("keydown", function(e) {
+            if(e.key == "Enter") {
+                worldGrid.UpdateGridByInput();
+            }
+        });
+        document.getElementById(this.elementNames.gridSizeY).addEventListener("keydown", function(e) {
+            if(e.key == "Enter") {
+                worldGrid.UpdateGridByInput();
+            }
+        });
 
     }
 
@@ -28,6 +42,59 @@ class GridHandler {
     }
 
     //  Methods
+    UpdateGridByInput() {
+        this.x = parseInt(document.getElementById(worldGrid.elementNames.gridSizeX).value);
+        this.y = parseInt(document.getElementById(worldGrid.elementNames.gridSizeY).value);
+        worldGrid.ChangeGridSize(this.x, this.y);
+    }
+
+    ChangeGridSize(x = 0, y = 0) {
+        
+        function ySizeIsBigger() { return y > worldGrid.data.grid.length }
+        function ySizeIsSmaller() { return y < worldGrid.data.grid.length }
+
+        while ( ySizeIsSmaller() ) {
+
+            worldGrid.data.grid.pop();
+
+        }
+
+        while ( ySizeIsBigger() ) {
+            
+            let tileArray = [];
+
+            for(var i=0; i < worldGrid.data.grid[0].length; i++) {
+                tileArray.push(worldGrid.defaultTile);
+            }
+
+            worldGrid.data.grid.push(tileArray);
+
+        }
+        
+        function xSizeIsBigger() { return x > worldGrid.data.grid[worldGrid.data.grid.length-1].length }
+        function xSizeIsSmaller() { return x < worldGrid.data.grid[worldGrid.data.grid.length-1].length }
+
+        while ( xSizeIsSmaller() ) {
+
+            worldGrid.data.grid.forEach( function(tileXArray = []) {
+                tileXArray.pop();
+            });
+
+        }
+
+        while ( xSizeIsBigger() ) {
+
+            worldGrid.data.grid.forEach( function(tileXArray = []) {
+                tileXArray.push(worldGrid.defaultTile);
+            })
+
+        }
+
+        //  Render after changes.
+
+        worldGrid.RenderGrid();
+
+    }
 
     LoadUserGridData (file) {
         
@@ -80,6 +147,7 @@ class GridHandler {
             for(var x=0; x < worldGrid.data.grid[0].length; x++) {
 
                 let currentTile = worldGrid.data.grid[y][x];
+                let tileRectPos = this.GetRectPos(x, y);
                 
                 switch(currentTile.type) {
                     case "land":
@@ -91,9 +159,11 @@ class GridHandler {
                     case "wall":
                         worldGrid.canvasContext.fillStyle = "#FF0000";
                     break;
+                    default: // Set placeholder tile.
+                        worldGrid.canvasContext.drawImage(worldGrid.placeHolderImage, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                        continue;
+                    break;
                 }
-
-                let tileRectPos = this.GetRectPos(x, y);
 
                 worldGrid.canvasContext.fillRect(tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
             }
