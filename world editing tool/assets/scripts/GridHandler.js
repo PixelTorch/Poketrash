@@ -32,7 +32,7 @@ class GridHandler {
             }
             worldGrid.RenderGrid();
         });
-        
+
         document.getElementById(this.elementNames.gridSizeX).addEventListener("keydown", function(e) {
             if(e.key == "Enter") {
                 worldGrid.UpdateGridByInput();
@@ -58,6 +58,8 @@ class GridHandler {
         var minMagnification = 0.5;
         var maxMagnification = worldGrid.canvas.height/worldGrid.tileSize;
         
+        worldGrid.canvasContext.imageSmoothingEnabled = (magnification > 1) ? false : true;
+
         if (magnification < minMagnification) {
 
             return worldGrid.zoom = minMagnification;
@@ -136,6 +138,8 @@ class GridHandler {
         
         worldGrid.canvas.height = worldGrid.canvas.parentElement.offsetHeight
         worldGrid.canvas.width = worldGrid.canvas.parentElement.offsetWidth;
+
+        worldGrid.setZoom(worldGrid.zoom); //   Sets image smoothing accordingly, reseting the canvas size tends to mess with this so this is a reset for that..
 
     }
 
