@@ -7,6 +7,10 @@ class GridHandler {
             fileName: "InputFileName",
             gridSizeX: "GridInputSizeX",
             gridSizeY: "GridInputSizeY",
+            selectedTileGridPosX: "ToolsSelectedTileGridPositionX",
+            selectedTileGridPosY: "ToolsSelectedTileGridPositionY",
+            selectedTileTexture: "ToolsSelectedTileTexture",
+            selectedTileType: "ToolsSelectedTileType",
             canvas: "RenderArea"
         }
         this.defaultTile = { texture: "placeholder", type: "placeholder" };
@@ -37,7 +41,7 @@ class GridHandler {
                 worldGrid.setZoom(worldGrid.zoom-0.2);
             }
             worldGrid.RenderGrid();
-        });
+        }, {passive: true});
 
         document.getElementById(this.elementNames.gridSizeX).addEventListener("keydown", function(e) {
             if(e.key == "Enter") {
@@ -49,6 +53,8 @@ class GridHandler {
                 worldGrid.UpdateGridByInput();
             }
         });
+        document.getElementById(this.elementNames.gridSizeX).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.elementNames.gridSizeY).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
         
     }
 
@@ -117,6 +123,7 @@ class GridHandler {
 
         worldGrid.selectedTile.tile = worldGrid.data.grid[tilePosition.y][tilePosition.x];
 
+        worldGrid.UpdateToolsViewValues();
         worldGrid.RenderGrid();
 
         return true;
@@ -126,6 +133,31 @@ class GridHandler {
         this.x = parseInt(document.getElementById(worldGrid.elementNames.gridSizeX).value);
         this.y = parseInt(document.getElementById(worldGrid.elementNames.gridSizeY).value);
         worldGrid.ChangeGridSize(this.x, this.y);
+    }
+
+    UpdateToolsViewValues() {
+
+        //  Update Tools views
+        document.getElementById(worldGrid.elementNames.gridSizeX).value = worldGrid.data.grid[0].length;
+        document.getElementById(worldGrid.elementNames.gridSizeY).value = worldGrid.data.grid.length;
+
+        // Fallback - selectedTile information
+        let selectedTileAvailable = true;
+        if (worldGrid.selectedTile == undefined) { 
+            if ( !worldGrid.SelectTile({x: 0, y: 0}) ) {
+                selectedTileAvailable = false;
+            }
+        }
+
+        if (selectedTileAvailable) {
+            document.getElementById(worldGrid.elementNames.selectedTileGridPosX).value = worldGrid.selectedTile.tilePosition.x;
+            document.getElementById(worldGrid.elementNames.selectedTileGridPosY).value = worldGrid.selectedTile.tilePosition.y;
+            document.getElementById(worldGrid.elementNames.selectedTileTexture).value = worldGrid.selectedTile.tile.texture;
+            document.getElementById(worldGrid.elementNames.selectedTileType).value = worldGrid.selectedTile.tile.type;
+        }
+        
+        return true;
+
     }
 
     ChangeGridSize(x = 0, y = 0) {
@@ -277,15 +309,14 @@ class GridHandler {
     }
 
     DisplayGridData (loadedData, file) {
+        
+        document.getElementById(worldGrid.elementNames.fileName).innerHTML = file.name;
 
         worldGrid.data = JSON.parse(loadedData);
 
-        //  Update Tools views
-        document.getElementById(worldGrid.elementNames.fileName).innerHTML = file.name;
-        document.getElementById(worldGrid.elementNames.gridSizeX).value = worldGrid.data.grid[0].length;
-        document.getElementById(worldGrid.elementNames.gridSizeY).value = worldGrid.data.grid.length;
-        
+        worldGrid.UpdateToolsViewValues();
         worldGrid.RenderGrid();
+
     }
 
 }
