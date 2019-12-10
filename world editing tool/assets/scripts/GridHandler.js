@@ -53,8 +53,15 @@ class GridHandler {
                 worldGrid.UpdateGridByInput();
             }
         });
+        document.getElementById(this.elementNames.selectedTileTexture).addEventListener("keydown", function(e) {
+            if(e.key == "Enter") {
+                worldGrid.UpdateGridByInput();
+            }
+        });
         document.getElementById(this.elementNames.gridSizeX).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
         document.getElementById(this.elementNames.gridSizeY).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.elementNames.selectedTileTexture).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.elementNames.selectedTileType).addEventListener("change", function(e) { worldGrid.UpdateGridByInput(); });
         
     }
 
@@ -110,6 +117,16 @@ class GridHandler {
     }
 
     //  Methods
+    EditSelectedTile(texture = worldGrid.defaultTile.texture, type = worldGrid.defaultTile.type) {
+
+        worldGrid.selectedTile.tile.texture = texture;
+        worldGrid.selectedTile.tile.type = type;
+        
+        worldGrid.UpdateToolsViewValues();
+        worldGrid.RenderGrid();
+        
+    }
+
     SelectTile(tilePosition = {x: 0, y: 0}) {
 
         if (tilePosition.x < 0 || tilePosition.x > worldGrid.data.grid[0].length-1 || tilePosition.y < 0 || tilePosition.y > worldGrid.data.grid.length-1) {
@@ -130,9 +147,18 @@ class GridHandler {
     }
 
     UpdateGridByInput() {
+        
+        //  Grid size
         this.x = parseInt(document.getElementById(worldGrid.elementNames.gridSizeX).value);
         this.y = parseInt(document.getElementById(worldGrid.elementNames.gridSizeY).value);
         worldGrid.ChangeGridSize(this.x, this.y);
+
+        //  selected tile
+        worldGrid.EditSelectedTile(
+            document.getElementById(worldGrid.elementNames.selectedTileTexture).value,
+            document.getElementById(worldGrid.elementNames.selectedTileType).value
+        );
+
     }
 
     UpdateToolsViewValues() {
