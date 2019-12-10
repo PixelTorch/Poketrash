@@ -13,6 +13,8 @@ class GridHandler {
         this.tileSize = 32;
         this.zoom = 1;
 
+        this.selectedTile;
+
         this.placeHolderImage = new Image();
         this.placeHolderImage.src = "assets/images/placeholders/tile.png";
 
@@ -21,6 +23,10 @@ class GridHandler {
 
         // Events
         window.addEventListener("resize", function() { worldGrid.RenderGrid(); });
+
+        this.canvas.addEventListener("click", function(e) {
+            worldGrid.SelectTile( worldGrid.clickedTilePosition(e.clientX, e.clientY) );
+        });
 
         this.canvas.addEventListener("wheel", function(scrollEvent) {
             if (scrollEvent.deltaY < 0) {
@@ -54,7 +60,31 @@ class GridHandler {
         ];
     }
 
-    setZoom(magnification) {
+    clickedTilePosition(clickPosX = 0, clickPosY = 0) {
+
+        //  Get click position relative to the top left of the canvas element.
+        let canvasRelativeClickPosX = clickPosX - worldGrid.canvas.getBoundingClientRect().x;
+        let canvasRelativeClickPosY = clickPosY - worldGrid.canvas.getBoundingClientRect().y;
+
+        //  Get the top left location of the world grid.
+        let gridTopLeftPos = [
+            worldGrid.canvasCenter()[0] - worldGrid.data.grid[0].length * (worldGrid.tileSize / 2) * worldGrid.zoom,
+            worldGrid.canvasCenter()[1] - worldGrid.data.grid.length * (worldGrid.tileSize / 2) * worldGrid.zoom
+        ]
+
+        //  Get the top left location of the mouse click relative to the top left location of the world grid.
+        let relativeClickPosX = canvasRelativeClickPosX - gridTopLeftPos[0];
+        let relativeClickPosY = canvasRelativeClickPosY - gridTopLeftPos[1];
+
+        // Return an integer of coordinates for the tile positions through a calculation of the mouse location and the tilesizes.
+        return {
+            x: Math.floor(relativeClickPosX / (worldGrid.tileSize * worldGrid.zoom)),
+            y: Math.floor(relativeClickPosY / (worldGrid.tileSize * worldGrid.zoom))
+        }
+        
+    }
+
+    setZoom(magnification = 1) {
         var minMagnification = 0.5;
         var maxMagnification = worldGrid.canvas.height/worldGrid.tileSize;
         
@@ -74,6 +104,24 @@ class GridHandler {
     }
 
     //  Methods
+    SelectTile(tilePosition = {x: 0, y: 0}) {
+
+        if (tilePosition.x < 0 || tilePosition.x > worldGrid.data.grid[0].length-1 || tilePosition.y < 0 || tilePosition.y > worldGrid.data.grid.length-1) {
+            return false;
+        }
+
+        worldGrid.selectedTile = {
+            tile: {},
+            tilePosition: tilePosition
+        };
+
+        worldGrid.selectedTile.tile = worldGrid.data.grid[tilePosition.y][tilePosition.x];
+
+        worldGrid.RenderGrid();
+
+        return true;
+    }
+
     UpdateGridByInput() {
         this.x = parseInt(document.getElementById(worldGrid.elementNames.gridSizeX).value);
         this.y = parseInt(document.getElementById(worldGrid.elementNames.gridSizeY).value);
@@ -143,10 +191,11 @@ class GridHandler {
 
     }
 
-    RenderOutline(coordinates = [{x:0, y:0}, {x:1, y:1}], hexColor = "#FFFFFF", width = 2 ) {
+    RenderOutline(coordinates = [{x:0, y:0}, {x:1, y:1}], hexColor = "#000000", width = 2 ) {
 
-        worldGrid.canvasContext.fillStyle = hexColor;
+        worldGrid.canvasContext.strokeStyle = hexColor;
         worldGrid.canvasContext.lineWidth = width;
+
         worldGrid.canvasContext.strokeRect(
             coordinates[0].x,
             coordinates[0].y,
@@ -156,7 +205,7 @@ class GridHandler {
 
     }
 
-    GetRectPos(grisPosx = 0, gridPosY = 0, scale = 1, tilesX = 1, tilesY = 1) {
+    GetRectPos(gridPosX = 0, gridPosY = 0, scale = 1, tilesX = 1, tilesY = 1) {
 
         let canvasCenter = worldGrid.canvasCenter();
         let gridSize = [worldGrid.data.grid[0].length*worldGrid.tileSize * worldGrid.zoom, worldGrid.data.grid.length*worldGrid.tileSize * worldGrid.zoom];
@@ -164,7 +213,7 @@ class GridHandler {
         let tileOffsetFromCenter = [-(gridSize[0]/2), -(gridSize[1]/2)];
 
         return [
-            tileOffsetFromCenter[0] + (grisPosx * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[0],
+            tileOffsetFromCenter[0] + (gridPosX * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[0],
             tileOffsetFromCenter[1] + (gridPosY * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[1],
             worldGrid.tileSize * tilesX * worldGrid.zoom,
             worldGrid.tileSize * tilesY * worldGrid.zoom
@@ -204,6 +253,22 @@ class GridHandler {
         }
         
         let gridOrigin = this.GetRectPos(0, 0, worldGrid.zoom, worldGrid.data.grid[0].length, worldGrid.data.grid.length);
+
+        if(worldGrid.selectedTile != undefined) {
+            let selectedTileRect = this.GetRectPos(
+                worldGrid.selectedTile.tilePosition.x,
+                worldGrid.selectedTile.tilePosition.y,
+                worldGrid.zoom,
+                1,
+                1
+            );
+            worldGrid.RenderOutline([
+                {x: selectedTileRect[0], y: selectedTileRect[1]},
+                {x: selectedTileRect[2], y: selectedTileRect[3]}],
+                "#FFA500",
+                1
+            );
+        }
         worldGrid.RenderOutline([
             { x: gridOrigin[0], y: gridOrigin[1]},
             { x: gridOrigin[2], y: gridOrigin[3] }
