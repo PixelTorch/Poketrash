@@ -202,7 +202,7 @@ class GridHandler {
             let tileArray = [];
 
             for(var i=0; i < worldGrid.data.grid[0].length; i++) {
-                tileArray.push(worldGrid.defaultTile);
+                tileArray.push( Object.create(worldGrid.defaultTile) );
             }
 
             worldGrid.data.grid.push(tileArray);
@@ -223,7 +223,7 @@ class GridHandler {
         while ( xSizeIsBigger() ) {
 
             worldGrid.data.grid.forEach( function(tileXArray = []) {
-                tileXArray.push(worldGrid.defaultTile);
+                tileXArray.push( Object.create(worldGrid.defaultTile) );
             })
 
         }
