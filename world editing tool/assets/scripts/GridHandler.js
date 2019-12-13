@@ -122,6 +122,24 @@ class GridHandler {
     }
 
     //  Methods
+    DownloadGrid() {
+
+        let objectString = JSON.stringify(worldGrid.data);
+
+        var element = document.createElement('a');
+
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(objectString));
+        element.setAttribute('download', (worldGrid.data.name + '.json') );
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+
+    }
+
     LoadAssets() {
         
     }
@@ -329,7 +347,7 @@ class GridHandler {
                     switch(currentTile.texture) { // WIP
                         case "grass":
                             if (worldGrid.sprites[0] == undefined) {
-                                image.src = "../assets/images/sprites/tiles/grass.png";
+                                image.src = "../assets/images/sprites/tiles/" + currentTile.texture + ".png";
                                 image.onload = function() {
                                     worldGrid.sprites[0] = image;
                                     worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
@@ -340,7 +358,7 @@ class GridHandler {
                         break;
                         case "path":
                             if (worldGrid.sprites[1] == undefined) {
-                                image.src = "../assets/images/sprites/tiles/path.png";
+                                image.src = "../assets/images/sprites/tiles/" + currentTile.texture + ".png";
                                 image.onload = function() {
                                     worldGrid.sprites[1] = image;
                                     worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
@@ -349,9 +367,9 @@ class GridHandler {
                                 image = worldGrid.sprites[1];
                             }
                         break;
-                        case "cliff":
+                        case "water":
                             if (worldGrid.sprites[2] == undefined) {
-                                image.src = "../assets/images/sprites/tiles/water.png";
+                                image.src = "../assets/images/sprites/tiles/" + currentTile.texture + ".png";
                                 image.onload = function() {
                                     worldGrid.sprites[2] = image;
                                     worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);

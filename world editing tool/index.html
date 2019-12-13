@@ -50,13 +50,17 @@
                         </div>
                         
                         <h5>Upload a grid:</h5>
-                        <div class="input-group">
+                        <div class="input-group mb-3">
                             <div class="custom-file">
                                 <input type="file" id="GridUpload" class="custom-file-input" onchange="worldGrid.LoadUserGridData(this.files[0], 'JSON')" aria-describedby="inputGroupFileAddon01">
                                 <label id="InputFileName" class="custom-file-label" for="GridUpload">Choose file</label>
                             </div>
                         </div>
 
+                        <h5>Download current grid</h5>
+                            <div class="btn btn-outline-secondary w-100" onclick='worldGrid.DownloadGrid()'>
+                                Download grid!
+                            </div>
                         <hr/>
                         
                         <div id="SelectedTileView">
