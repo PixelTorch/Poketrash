@@ -19,6 +19,11 @@ class GridHandler {
 
         this.selectedTile;
 
+        this.sprites = [
+            undefined,
+            undefined,
+            undefined
+        ];
         this.placeHolderImage = new Image();
         this.placeHolderImage.src = "assets/images/placeholders/tile.png";
 
@@ -117,6 +122,14 @@ class GridHandler {
     }
 
     //  Methods
+    LoadAssets() {
+        
+    }
+
+    LoadSprites() {
+
+    }
+
     EditSelectedTile(texture = worldGrid.defaultTile.texture, type = worldGrid.defaultTile.type) {
 
         worldGrid.selectedTile.tile.texture = texture;
@@ -279,7 +292,7 @@ class GridHandler {
 
     }
 
-    RenderGrid() {
+    RenderGrid(renderMode = "texture") {
         
         worldGrid.ResetCanvasSize();
         worldGrid.canvasContext.clearRect(0, 0, worldGrid.canvas.width, worldGrid.canvas.height);
@@ -290,23 +303,72 @@ class GridHandler {
                 let currentTile = worldGrid.data.grid[y][x];
                 let tileRectPos = this.GetRectPos(x, y, worldGrid.zoom);
                 
-                switch(currentTile.type) {
-                    case "land":
-                        worldGrid.canvasContext.fillStyle = "#00FF00";
-                    break;
-                    case "water":
-                        worldGrid.canvasContext.fillStyle = "#0000FF";
-                    break;
-                    case "wall":
-                        worldGrid.canvasContext.fillStyle = "#FF0000";
-                    break;
-                    default: // Set placeholder tile.
-                        worldGrid.canvasContext.drawImage(worldGrid.placeHolderImage, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
-                        continue;
-                    break;
+                if (renderMode == "type") {
+                    switch(currentTile.type) {
+                        case "land":
+                            worldGrid.canvasContext.fillStyle = "#00FF00";
+                        break;
+                        case "water":
+                            worldGrid.canvasContext.fillStyle = "#0000FF";
+                        break;
+                        case "wall":
+                            worldGrid.canvasContext.fillStyle = "#FF0000";
+                        break;
+                        default: // Set placeholder tile.
+                            worldGrid.canvasContext.drawImage(worldGrid.placeHolderImage, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                            continue;
+                        break;
+                    }
+                    
+                    worldGrid.canvasContext.fillRect(tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                    
+                } else if (renderMode == "texture") {
+
+                    let image = new Image();
+
+                    switch(currentTile.texture) { // WIP
+                        case "grass":
+                            if (worldGrid.sprites[0] == undefined) {
+                                image.src = "../assets/images/sprites/tiles/grass.png";
+                                image.onload = function() {
+                                    worldGrid.sprites[0] = image;
+                                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                                }
+                            } else {
+                                image = worldGrid.sprites[0];
+                            }
+                        break;
+                        case "path":
+                            if (worldGrid.sprites[1] == undefined) {
+                                image.src = "../assets/images/sprites/tiles/path.png";
+                                image.onload = function() {
+                                    worldGrid.sprites[1] = image;
+                                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                                }
+                            } else {
+                                image = worldGrid.sprites[1];
+                            }
+                        break;
+                        case "cliff":
+                            if (worldGrid.sprites[2] == undefined) {
+                                image.src = "../assets/images/sprites/tiles/water.png";
+                                image.onload = function() {
+                                    worldGrid.sprites[2] = image;
+                                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                                }
+                            } else {
+                                image = worldGrid.sprites[2];
+                            }
+                        break;
+                        default:
+                            image.src = worldGrid.placeHolderImage.src;
+                        break;
+                    }
+
+                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+
                 }
 
-                worldGrid.canvasContext.fillRect(tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
             }
         }
         
