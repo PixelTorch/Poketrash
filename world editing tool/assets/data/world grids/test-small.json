@@ -1,8 +1,1 @@
-{
-    "name": "Pellet Town",
-    "grid": [
-        [{"texture":"grass", "type":"land"}, {"texture":"stone", "type":"land"}, {"texture":"stone_wall", "type":"wall"}],
-        [{"texture":"grass", "type":"land"}, {"texture":"grass", "type":"land"}, {"texture":"cliff", "type":"wall"}],
-        [{"texture":"grass", "type":"land"}, {"texture":"cliff", "type":"wall"}, {"texture":"water", "type":"water"}]
-    ]
-}
+{"name":"Pellet Town","grid":[[{"texture":"grass","type":"land"},{"texture":"grass","type":"land"},{"texture":"path","type":"wall"}],[{"texture":"grass","type":"land"},{"texture":"grass","type":"land"},{"texture":"path","type":"wall"}],[{"texture":"grass","type":"land"},{"texture":"path","type":"wall"},{"texture":"water","type":"water"}]]}
