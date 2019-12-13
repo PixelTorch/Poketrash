@@ -10,7 +10,7 @@
 
             function LoadUploadedFile(file, callback = function(e){ console.log(e); } ) {
 
-                var reader = new FileReader();
+                let reader = new FileReader();
 
                 reader.onload = function(e) {
                     
@@ -22,9 +22,25 @@
 
             }
 
+            function GetFiles(path) {
+
+                let reader = new XMLHttpRequest();
+
+                reader.open("GET", path);
+                
+                reader.addEventListener("load", function() {
+
+                    console.log(reader.response);
+
+                });
+
+                reader.send();
+
+            }
+
         </script>
 
-        <script src="assets/scripts/GridHandler.js"></script>
+        <script src="assets/scripts/GridHandler/GridHandler.js"></script>
     
     </head>
     <body>

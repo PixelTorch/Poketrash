@@ -1,22 +1,10 @@
 class GridHandler {
 
     constructor() {
+
+        this.configFile;
+
         this.data;
-
-        this.elementNames = {
-            fileName: "InputFileName",
-            gridSizeX: "GridInputSizeX",
-            gridSizeY: "GridInputSizeY",
-            selectedTileGridPosX: "ToolsSelectedTileGridPositionX",
-            selectedTileGridPosY: "ToolsSelectedTileGridPositionY",
-            selectedTileTexture: "ToolsSelectedTileTexture",
-            selectedTileType: "ToolsSelectedTileType",
-            canvas: "RenderArea"
-        }
-        this.defaultTile = { texture: "placeholder", type: "placeholder" };
-        this.tileSize = 32;
-        this.zoom = 1;
-
         this.selectedTile;
 
         this.sprites = [
@@ -24,49 +12,62 @@ class GridHandler {
             undefined,
             undefined
         ];
-        this.placeHolderImage = new Image();
-        this.placeHolderImage.src = "assets/images/placeholders/tile.png";
 
-        this.canvas = document.getElementById(this.elementNames.canvas);
+        let configFetcher = new XMLHttpRequest();
+        configFetcher.open("GET", "/config.json", false);
+        configFetcher.send();
+
+        this.placeHolderImage = new Image();
+        this.placeHolderImage.src = this.configFile.placeHolderImageSource;
+
+        this.canvas = document.getElementById(this.configFile.elementNames.canvas);
         this.canvasContext = this.canvas.getContext("2d");
 
         // Events
-        window.addEventListener("resize", function() { worldGrid.RenderGrid(); });
 
+        window.addEventListener("resize", function() { worldGrid.RenderGrid(); });
+    
         this.canvas.addEventListener("click", function(e) {
             worldGrid.SelectTile( worldGrid.clickedTilePosition(e.clientX, e.clientY) );
         });
 
         this.canvas.addEventListener("wheel", function(scrollEvent) {
             if (scrollEvent.deltaY < 0) {
-                //  setZoom in
-                worldGrid.setZoom(worldGrid.zoom+0.2);
+                //  setconfigFile.zoom in
+                worldGrid.setconfigFile.zoom(worldGrid.configFile.zoom+0.2);
             } else if (scrollEvent.deltaY > 0) {
-                //  scroll setZoom
-                worldGrid.setZoom(worldGrid.zoom-0.2);
+                //  scroll setconfigFile.zoom
+                worldGrid.setconfigFile.zoom(worldGrid.configFile.zoom-0.2);
             }
             worldGrid.RenderGrid();
         }, {passive: true});
 
-        document.getElementById(this.elementNames.gridSizeX).addEventListener("keydown", function(e) {
+        document.getElementById(this.configFile.elementNames.gridSizeX).addEventListener("keydown", function(e) {
             if(e.key == "Enter") {
                 worldGrid.UpdateGridByInput();
             }
         });
-        document.getElementById(this.elementNames.gridSizeY).addEventListener("keydown", function(e) {
+        document.getElementById(this.configFile.elementNames.gridSizeY).addEventListener("keydown", function(e) {
             if(e.key == "Enter") {
                 worldGrid.UpdateGridByInput();
             }
         });
-        document.getElementById(this.elementNames.selectedTileTexture).addEventListener("keydown", function(e) {
+        document.getElementById(this.configFile.elementNames.selectedTileTexture).addEventListener("keydown", function(e) {
             if(e.key == "Enter") {
                 worldGrid.UpdateGridByInput();
             }
         });
-        document.getElementById(this.elementNames.gridSizeX).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
-        document.getElementById(this.elementNames.gridSizeY).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
-        document.getElementById(this.elementNames.selectedTileTexture).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
-        document.getElementById(this.elementNames.selectedTileType).addEventListener("change", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.configFile.elementNames.gridSizeX).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.configFile.elementNames.gridSizeY).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.configFile.elementNames.selectedTileTexture).addEventListener("blur", function(e) { worldGrid.UpdateGridByInput(); });
+        document.getElementById(this.configFile.elementNames.selectedTileType).addEventListener("change", function(e) { worldGrid.UpdateGridByInput(); });
+
+        function InitEvents() {
+
+            
+        }
+
+
         
     }
 
@@ -86,39 +87,39 @@ class GridHandler {
 
         //  Get the top left location of the world grid.
         let gridTopLeftPos = [
-            worldGrid.canvasCenter()[0] - worldGrid.data.grid[0].length * (worldGrid.tileSize / 2) * worldGrid.zoom,
-            worldGrid.canvasCenter()[1] - worldGrid.data.grid.length * (worldGrid.tileSize / 2) * worldGrid.zoom
+            worldGrid.canvasCenter()[0] - worldGrid.data.grid[0].length * (worldGrid.configFile.tileSize / 2) * worldGrid.configFile.zoom,
+            worldGrid.canvasCenter()[1] - worldGrid.data.grid.length * (worldGrid.configFile.tileSize / 2) * worldGrid.configFile.zoom
         ]
 
         //  Get the top left location of the mouse click relative to the top left location of the world grid.
         let relativeClickPosX = canvasRelativeClickPosX - gridTopLeftPos[0];
         let relativeClickPosY = canvasRelativeClickPosY - gridTopLeftPos[1];
 
-        // Return an integer of coordinates for the tile positions through a calculation of the mouse location and the tilesizes.
+        // Return an integer of coordinates for the tile positions through a calculation of the mouse location and the configFile.tileSizes.
         return {
-            x: Math.floor(relativeClickPosX / (worldGrid.tileSize * worldGrid.zoom)),
-            y: Math.floor(relativeClickPosY / (worldGrid.tileSize * worldGrid.zoom))
+            x: Math.floor(relativeClickPosX / (worldGrid.configFile.tileSize * worldGrid.configFile.zoom)),
+            y: Math.floor(relativeClickPosY / (worldGrid.configFile.tileSize * worldGrid.configFile.zoom))
         }
         
     }
 
     setZoom(magnification = 1) {
         var minMagnification = 0.5;
-        var maxMagnification = worldGrid.canvas.height/worldGrid.tileSize;
+        var maxMagnification = worldGrid.canvas.height/worldGrid.configFile.tileSize;
         
         worldGrid.canvasContext.imageSmoothingEnabled = (magnification > 1) ? false : true;
 
         if (magnification < minMagnification) {
 
-            return worldGrid.zoom = minMagnification;
+            return worldGrid.configFile.zoom = minMagnification;
 
         } else if (magnification > maxMagnification) {
 
-            return worldGrid.zoom = maxMagnification;
+            return worldGrid.configFile.zoom = maxMagnification;
 
         }
 
-        return worldGrid.zoom = magnification;
+        return worldGrid.configFile.zoom = magnification;
     }
 
     //  Methods
@@ -147,8 +148,7 @@ class GridHandler {
     LoadSprites() {
 
     }
-
-    EditSelectedTile(texture = worldGrid.defaultTile.texture, type = worldGrid.defaultTile.type) {
+    EditSelectedTile(texture = worldGrid.configFile.defaultTile.texture, type = worldGrid.configFile.defaultTile.type) {
 
         worldGrid.selectedTile.tile.texture = texture;
         worldGrid.selectedTile.tile.type = type;
@@ -180,14 +180,14 @@ class GridHandler {
     UpdateGridByInput() {
         
         //  Grid size
-        this.x = parseInt(document.getElementById(worldGrid.elementNames.gridSizeX).value);
-        this.y = parseInt(document.getElementById(worldGrid.elementNames.gridSizeY).value);
+        this.x = parseInt(document.getElementById(worldGrid.configFile.elementNames.gridSizeX).value);
+        this.y = parseInt(document.getElementById(worldGrid.configFile.elementNames.gridSizeY).value);
         worldGrid.ChangeGridSize(this.x, this.y);
 
         //  selected tile
         worldGrid.EditSelectedTile(
-            document.getElementById(worldGrid.elementNames.selectedTileTexture).value,
-            document.getElementById(worldGrid.elementNames.selectedTileType).value
+            document.getElementById(worldGrid.configFile.elementNames.selectedTileTexture).value,
+            document.getElementById(worldGrid.configFile.elementNames.selectedTileType).value
         );
 
     }
@@ -195,8 +195,8 @@ class GridHandler {
     UpdateToolsViewValues() {
 
         //  Update Tools views
-        document.getElementById(worldGrid.elementNames.gridSizeX).value = worldGrid.data.grid[0].length;
-        document.getElementById(worldGrid.elementNames.gridSizeY).value = worldGrid.data.grid.length;
+        document.getElementById(worldGrid.configFile.elementNames.gridSizeX).value = worldGrid.data.grid[0].length;
+        document.getElementById(worldGrid.configFile.elementNames.gridSizeY).value = worldGrid.data.grid.length;
 
         // Fallback - selectedTile information
         let selectedTileAvailable = true;
@@ -207,10 +207,10 @@ class GridHandler {
         }
 
         if (selectedTileAvailable) {
-            document.getElementById(worldGrid.elementNames.selectedTileGridPosX).value = worldGrid.selectedTile.tilePosition.x;
-            document.getElementById(worldGrid.elementNames.selectedTileGridPosY).value = worldGrid.selectedTile.tilePosition.y;
-            document.getElementById(worldGrid.elementNames.selectedTileTexture).value = worldGrid.selectedTile.tile.texture;
-            document.getElementById(worldGrid.elementNames.selectedTileType).value = worldGrid.selectedTile.tile.type;
+            document.getElementById(worldGrid.configFile.elementNames.selectedTileGridPosX).value = worldGrid.selectedTile.tilePosition.x;
+            document.getElementById(worldGrid.configFile.elementNames.selectedTileGridPosY).value = worldGrid.selectedTile.tilePosition.y;
+            document.getElementById(worldGrid.configFile.elementNames.selectedTileTexture).value = worldGrid.selectedTile.tile.texture;
+            document.getElementById(worldGrid.configFile.elementNames.selectedTileType).value = worldGrid.selectedTile.tile.type;
         }
         
         return true;
@@ -233,7 +233,7 @@ class GridHandler {
             let tileArray = [];
 
             for(var i=0; i < worldGrid.data.grid[0].length; i++) {
-                tileArray.push( Object.create(worldGrid.defaultTile) );
+                tileArray.push( Object.create(worldGrid.configFile.defaultTile) );
             }
 
             worldGrid.data.grid.push(tileArray);
@@ -254,7 +254,7 @@ class GridHandler {
         while ( xSizeIsBigger() ) {
 
             worldGrid.data.grid.forEach( function(tileXArray = []) {
-                tileXArray.push( Object.create(worldGrid.defaultTile) );
+                tileXArray.push( Object.create(worldGrid.configFile.defaultTile) );
             })
 
         }
@@ -276,7 +276,7 @@ class GridHandler {
         worldGrid.canvas.height = worldGrid.canvas.parentElement.offsetHeight
         worldGrid.canvas.width = worldGrid.canvas.parentElement.offsetWidth;
 
-        worldGrid.setZoom(worldGrid.zoom); //   Sets image smoothing accordingly, reseting the canvas size tends to mess with this so this is a reset for that..
+        worldGrid.setconfigFile.zoom(worldGrid.configFile.zoom); //   Sets image smoothing accordingly, reseting the canvas size tends to mess with this so this is a reset for that..
 
     }
 
@@ -297,15 +297,15 @@ class GridHandler {
     GetRectPos(gridPosX = 0, gridPosY = 0, scale = 1, tilesX = 1, tilesY = 1) {
 
         let canvasCenter = worldGrid.canvasCenter();
-        let gridSize = [worldGrid.data.grid[0].length*worldGrid.tileSize * worldGrid.zoom, worldGrid.data.grid.length*worldGrid.tileSize * worldGrid.zoom];
+        let gridSize = [worldGrid.data.grid[0].length*worldGrid.configFile.tileSize * worldGrid.configFile.zoom, worldGrid.data.grid.length*worldGrid.configFile.tileSize * worldGrid.configFile.zoom];
 
         let tileOffsetFromCenter = [-(gridSize[0]/2), -(gridSize[1]/2)];
 
         return [
-            tileOffsetFromCenter[0] + (gridPosX * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[0],
-            tileOffsetFromCenter[1] + (gridPosY * worldGrid.tileSize * worldGrid.zoom) + canvasCenter[1],
-            worldGrid.tileSize * tilesX * worldGrid.zoom,
-            worldGrid.tileSize * tilesY * worldGrid.zoom
+            tileOffsetFromCenter[0] + (gridPosX * worldGrid.configFile.tileSize * worldGrid.configFile.zoom) + canvasCenter[0],
+            tileOffsetFromCenter[1] + (gridPosY * worldGrid.configFile.tileSize * worldGrid.configFile.zoom) + canvasCenter[1],
+            worldGrid.configFile.tileSize * tilesX * worldGrid.configFile.zoom,
+            worldGrid.configFile.tileSize * tilesY * worldGrid.configFile.zoom
         ];
 
     }
@@ -319,9 +319,10 @@ class GridHandler {
             for(var x=0; x < worldGrid.data.grid[0].length; x++) {
 
                 let currentTile = worldGrid.data.grid[y][x];
-                let tileRectPos = this.GetRectPos(x, y, worldGrid.zoom);
+                let tileRectPos = this.GetRectPos(x, y, worldGrid.configFile.zoom);
                 
                 if (renderMode == "type") {
+                    
                     switch(currentTile.type) {
                         case "land":
                             worldGrid.canvasContext.fillStyle = "#00FF00";
@@ -333,70 +334,33 @@ class GridHandler {
                             worldGrid.canvasContext.fillStyle = "#FF0000";
                         break;
                         default: // Set placeholder tile.
-                            worldGrid.canvasContext.drawImage(worldGrid.placeHolderImage, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
+                            worldGrid.canvasContext.fillStyle = "#000000";
                             continue;
                         break;
                     }
-                    
-                    worldGrid.canvasContext.fillRect(tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
-                    
+
                 } else if (renderMode == "texture") {
+                    
+                    var list = new Array();
+                    if (list.includes(currentTile.texture)) {
 
-                    let image = new Image();
-
-                    switch(currentTile.texture) { // WIP
-                        case "grass":
-                            if (worldGrid.sprites[0] == undefined) {
-                                image.src = "../assets/images/sprites/tiles/" + currentTile.texture + ".png";
-                                image.onload = function() {
-                                    worldGrid.sprites[0] = image;
-                                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
-                                }
-                            } else {
-                                image = worldGrid.sprites[0];
-                            }
-                        break;
-                        case "path":
-                            if (worldGrid.sprites[1] == undefined) {
-                                image.src = "../assets/images/sprites/tiles/" + currentTile.texture + ".png";
-                                image.onload = function() {
-                                    worldGrid.sprites[1] = image;
-                                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
-                                }
-                            } else {
-                                image = worldGrid.sprites[1];
-                            }
-                        break;
-                        case "water":
-                            if (worldGrid.sprites[2] == undefined) {
-                                image.src = "../assets/images/sprites/tiles/" + currentTile.texture + ".png";
-                                image.onload = function() {
-                                    worldGrid.sprites[2] = image;
-                                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
-                                }
-                            } else {
-                                image = worldGrid.sprites[2];
-                            }
-                        break;
-                        default:
-                            image.src = worldGrid.placeHolderImage.src;
-                        break;
+                    } else {
+                        worldGrid.canvasContext.drawImage(worldGrid.placeHolderImage, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
                     }
 
-                    worldGrid.canvasContext.drawImage(image, tileRectPos[0], tileRectPos[1], tileRectPos[2], tileRectPos[3]);
-
                 }
+                
 
             }
         }
         
-        let gridOrigin = this.GetRectPos(0, 0, worldGrid.zoom, worldGrid.data.grid[0].length, worldGrid.data.grid.length);
+        let gridOrigin = this.GetRectPos(0, 0, worldGrid.configFile.zoom, worldGrid.data.grid[0].length, worldGrid.data.grid.length);
 
         if(worldGrid.selectedTile != undefined) {
             let selectedTileRect = this.GetRectPos(
                 worldGrid.selectedTile.tilePosition.x,
                 worldGrid.selectedTile.tilePosition.y,
-                worldGrid.zoom,
+                worldGrid.configFile.zoom,
                 1,
                 1
             );
@@ -416,7 +380,7 @@ class GridHandler {
 
     DisplayGridData (loadedData, file) {
         
-        document.getElementById(worldGrid.elementNames.fileName).innerHTML = file.name;
+        document.getElementById(worldGrid.configFile.elementNames.fileName).innerHTML = file.name;
 
         worldGrid.data = JSON.parse(loadedData);
 

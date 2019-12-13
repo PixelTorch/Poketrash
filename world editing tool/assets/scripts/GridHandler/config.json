@@ -1,0 +1,28 @@
+{
+
+    "elementNames": {
+
+        "fileName": "InputFileName",
+        "gridSizeX": "GridInputSizeX",
+        "gridSizeY": "GridInputSizeY",
+        "selectedTileGridPosX": "ToolsSelectedTileGridPositionX",
+        "selectedTileGridPosY": "ToolsSelectedTileGridPositionY",
+        "selectedTileTexture": "ToolsSelectedTileTexture",
+        "selectedTileType": "ToolsSelectedTileType",
+        "canvas": "RenderArea"
+
+    },
+
+    "defaultSpriteFolderRoot": "../assets/images/",
+    "placeHolderImageSource": "../assets/images/placeholders/tile.png",
+
+    "defaultTile": {
+
+        "texture": "placeholder",
+        "type": "placeholder"
+
+    },
+
+    "tileSize": 32,
+    "zoom": 1
+}
