@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>PokeTrash - world editing tool</title>
+        <link href="assets/stylesheet.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/stylesheets/bootstrap.css" rel="stylesheet" type="text/css"/>
+
+        <script>
+
+            function LoadUploadedFile(file, callback = function(e){ console.log(e); } ) {
+
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    
+                    callback(e.target.result, file);
+
+                }
+                
+                reader.readAsText(file);
+
+            }
+
+        </script>
+
+        <script src="assets/scripts/GridHandler.js"></script>
+    
+    </head>
+    <body>
+        
+        <div id="EditingMenu">
+            <div class="container fadeIn">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Tools</h1>
+                        <hr/>
+
+                        <h4>General information</h4>
+                        <h5>Grid size:</h5>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="">X</span>
+                            </div>
+                            <input id="GridInputSizeX" type="number" class="form-control">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="">Y</span>
+                              </div>
+                            <input id="GridInputSizeY" type="number" class="form-control">
+                        </div>
+                        
+                        <h5>Upload a grid:</h5>
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" id="GridUpload" class="custom-file-input" onchange="worldGrid.LoadUserGridData(this.files[0], 'JSON')" aria-describedby="inputGroupFileAddon01">
+                                <label id="InputFileName" class="custom-file-label" for="GridUpload">Choose file</label>
+                            </div>
+                        </div>
+
+                        <h5>Download current grid</h5>
+                            <div class="btn btn-outline-secondary w-100" onclick='worldGrid.DownloadGrid()'>
+                                Download grid!
+                            </div>
+                        <hr/>
+                        
+                        <div id="SelectedTileView">
+                            
+                            <h4>Currently selected tile</h4>
+                            
+                            <h5>Grid position:</h5>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="">X</span>
+                                </div>
+                                <input type="number" id="ToolsSelectedTileGridPositionX" class="form-control" value="0" readonly>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="">Y</span>
+                                </div>
+                                <input type="number" id="ToolsSelectedTileGridPositionY" class="form-control" value="0" readonly>
+                            </div>
+
+                            <h5>Texture:</h5>
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="text mb-3" id="ToolsSelectedTileTexture" class="form-control" type="text" placeholder="Search" aria-label="Search">
+                                <div class="input-group-append">
+                                    <div id="TexturePreviewBox" class="input-group-text">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5>Type:</h5>
+                            <div class="input-group input-group-lg">
+                                <select id="ToolsSelectedTileType" class="custom-select">
+                                    <option value="land"selected>land</option>
+                                    <option value="water">water</option>
+                                    <option value="wall">wall</option>
+                                </select>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="renderAreaContainer">
+            <canvas id="RenderArea">
+    
+            </canvas>
+        </div>
+
+    </body>
+</html>
