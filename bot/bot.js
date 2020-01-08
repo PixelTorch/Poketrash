@@ -1,5 +1,7 @@
 const fileReader = require('fs');
-const helpMessages = JSON.parse( fileReader.readFileSync('HelpMessages.json') );
+const path = require('path');
+
+const helpMessages = JSON.parse( fileReader.readFileSync(path.join(__dirname, 'HelpMessages.json')) );
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -65,4 +67,4 @@ function Terminate() {
 
 // Start
 
-client.login('NjUyNjQ0Mjg1NDA1MjAwMzk1.Xer2ig.yIWJzj1T8RAxGXsb4L8qqYNU6N4');
+client.login('NjY0NDEyMDY0MTE4MjEwNTcx.XhWs5A.zfOpEF_G6j18PT-3zHSDLyEI1RY');
