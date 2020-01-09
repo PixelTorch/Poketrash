@@ -1,11 +1,16 @@
+//
 const fileReader = require('fs');
 const path = require('path');
 
 const helpMessages = JSON.parse( fileReader.readFileSync(path.join(__dirname, 'HelpMessages.json')) );
 
+//
+const GameHandler = require('./RPGGameHandler.js');
+const game = new GameHandler();
+
+//
 const Discord = require('discord.js');
 const client = new Discord.Client();
-
 
 //  Events
 
@@ -19,11 +24,13 @@ client.on('message', msg => {
 
   if (words[0] === '!poke') {
 
+    // Base command.
     if(words[1] == undefined) {
       Greet(msg);
       return;
     }
     
+    // Commands
     switch(words[1]) {
       case "stop":
         Terminate();
@@ -37,6 +44,10 @@ client.on('message', msg => {
       case "inventory":
         OpenInventory(msg.author, msg.channel);
       break;
+      case "draw":
+        //msg.channel.sendFile(game.Draw());
+        Draw(msg);
+      break;
     }
 
   }
@@ -44,6 +55,17 @@ client.on('message', msg => {
 
 
 //  Methods
+async function Draw(msg) {
+
+  let renderPromise = new Promise((resolve, reject) => {
+    resolve(game.Draw());
+  });
+  renderPromise.then((value) => {
+    let render = new Discord.Attachment(value, "GameState.png");
+    msg.channel.send(render);
+  });
+
+}
 
 function MovePlayer(message, direction = "none") {
   if (direction === "none") {
@@ -67,4 +89,4 @@ function Terminate() {
 
 // Start
 
-client.login('NjY0NDEyMDY0MTE4MjEwNTcx.XhWs5A.zfOpEF_G6j18PT-3zHSDLyEI1RY');
+client.login('NjY0NDEyMDY0MTE4MjEwNTcx.XhXTEA.845qtVq_ig8fBjM11OVJpIUWiGc');
