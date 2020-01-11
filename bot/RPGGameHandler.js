@@ -7,9 +7,7 @@ let eventEmitter = new EventEmitter();
 
 var viewWidth = 11;
 var viewHeight = 7;
-
-const canvas = createCanvas((viewWidth*32), (viewHeight*32));
-const ctx = canvas.getContext('2d');
+var tileSize = 32;
 
 class Instance {
 
@@ -20,8 +18,11 @@ class Instance {
     // Methods
     async Draw(
         world = { name: "N/A", grid: [[{texture: "grass", type: "land"}, {texture: "water", type: "land"}], [{texture: "path", type: "land"}, {texture: "grass", type: "land"}]] },
-        playerPos = {x: 1, y: 1} )
+        playerPos = {x: 5, y: 3} )
         {
+        
+        //  Clear canvas.
+        let canvas = createCanvas((viewWidth*tileSize), (viewHeight*tileSize));
         
         //  Figure out view area.
         let viewTopLeftCornerTile = {x: playerPos.x - Math.floor(viewWidth/2), y: playerPos.y - Math.floor(viewHeight/2)};
@@ -51,16 +52,18 @@ class Instance {
 
         //  After all assets are loaded, render.
         return await Promise.all(tileAssets).then((results) => {
-            return this.DrawPlayerView(world, results, assetsToLoad, viewTopLeftCornerTile);
+            return this.DrawPlayerView(canvas, world, results, assetsToLoad, viewTopLeftCornerTile);
         }, function (error) {
             return error;
         });
     }
 
-    DrawPlayerView(world, assets = new Array(new Image), assetNames = new Array(""), viewTopLeftCornerTile) {
+    DrawPlayerView(canvas, world, assets = new Array(new Image), assetNames = new Array(""), viewTopLeftCornerTile) {
+        
+        let ctx = canvas.getContext('2d');
         
         var y1 = 0;
-        for(var y=viewTopLeftCornerTile.y; y < viewHeight; y++) {
+        for(var y=viewTopLeftCornerTile.y; y < viewHeight+viewTopLeftCornerTile.y; y++) {
             //  Nothing here?
             if (world.grid[y] == undefined) {
                 y1++;
@@ -68,9 +71,9 @@ class Instance {
             }
 
             var x1 = 0;
-            for(var x=viewTopLeftCornerTile.x; x < viewWidth; x++) {
+            for(var x=viewTopLeftCornerTile.x; x < viewWidth+viewTopLeftCornerTile.x; x++) {
                 //  Nothing here?
-                if (world.grid[x] == undefined) {
+                if (world.grid[y][x] == undefined) {
                     x1++;
                     continue;
                 }

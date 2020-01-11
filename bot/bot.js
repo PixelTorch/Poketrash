@@ -58,7 +58,9 @@ client.on('message', msg => {
 async function Draw(msg) {
 
   let renderPromise = new Promise((resolve, reject) => {
-    resolve(game.Draw());
+    resolve(
+      game.Draw( JSON.parse( fileReader.readFileSync(path.join(__dirname, '/worlds/bigboi.json')) ) )
+    );
   });
   renderPromise.then((value) => {
     let render = new Discord.Attachment(value, "GameState.png");
@@ -89,4 +91,4 @@ function Terminate() {
 
 // Start
 
-client.login('NjY0NDEyMDY0MTE4MjEwNTcx.XhXTEA.845qtVq_ig8fBjM11OVJpIUWiGc');
+client.login('NjY0NDEyMDY0MTE4MjEwNTcx.Xhc3Vg.WHyzfmT0kW3E1QBdlkD5zbeNWpU');
